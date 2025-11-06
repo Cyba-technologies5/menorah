@@ -1,15 +1,7 @@
 // src/layouts/RootLayout.jsx
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
-import {
-  ArrowRight,
-  Phone,
-  Mail,
-  ChevronDown,
-  Menu,
-  X,
-} from "lucide-react";
-
+import { ArrowRight, Phone, Mail, ChevronDown, Menu, X } from "lucide-react";
 
 // ---- Contact constants (clickable tel/mail) ----
 const PHONE_DISPLAY = "(614) 772-0563";
@@ -76,11 +68,7 @@ export default function RootLayout() {
 
   // Prevent background scroll when mobile drawer open
   React.useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
   }, [mobileOpen]);
 
   return (
@@ -92,7 +80,7 @@ export default function RootLayout() {
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2" aria-label="Menorah Health LLP">
             <img
-             src="menorah-logo2.png"
+              src="/menorah-logo2.png"     {/* <-- absolute path from /public */}
               alt="Menorah Health LLP"
               className="h-10 w-auto object-contain"
               loading="eager"
@@ -103,7 +91,6 @@ export default function RootLayout() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-6 md:flex">
-            {/* Home */}
             <Link
               to="/"
               aria-current={isActive("/") ? "page" : undefined}
@@ -117,7 +104,6 @@ export default function RootLayout() {
               Home
             </Link>
 
-            {/* About */}
             <Link
               to="/about"
               aria-current={isActive("/about") ? "page" : undefined}
@@ -156,7 +142,6 @@ export default function RootLayout() {
                 />
               </Link>
 
-              {/* Dropdown panel */}
               <div
                 role="menu"
                 aria-label="Services"
@@ -187,7 +172,6 @@ export default function RootLayout() {
               </div>
             </div>
 
-            {/* Remaining links */}
             {navPrimary
               .filter(({ label }) => !["Home", "About Us", "Services"].includes(label))
               .map(({ label, href }) => {
@@ -262,7 +246,7 @@ export default function RootLayout() {
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div className="flex items-center gap-2">
                 <img
-                  src={logo}
+                  src="/menorah-logo2.png"   {/* <-- FIXED: no undefined variable */}
                   alt="Menorah Health LLP"
                   className="h-9 w-auto object-contain"
                 />
@@ -278,7 +262,6 @@ export default function RootLayout() {
 
             {/* Links */}
             <nav className="px-2 py-3">
-              {/* Home */}
               <Link
                 to="/"
                 onClick={() => setMobileOpen(false)}
@@ -290,7 +273,6 @@ export default function RootLayout() {
                 Home
               </Link>
 
-              {/* About */}
               <Link
                 to="/about"
                 onClick={() => setMobileOpen(false)}
@@ -302,7 +284,7 @@ export default function RootLayout() {
                 About Us
               </Link>
 
-              {/* Services (navigates to /services; accordion for anchors) */}
+              {/* Services (accordion) */}
               <div className="mt-1">
                 <div className="flex items-center">
                   <Link
@@ -322,15 +304,11 @@ export default function RootLayout() {
                     className="mx-2 inline-flex items-center rounded-lg px-2 py-2 hover:bg-neutral-50"
                   >
                     <ChevronDown
-                      className={cn(
-                        "h-5 w-5 transition-transform",
-                        mobileServicesOpen && "rotate-180"
-                      )}
+                      className={cn("h-5 w-5 transition-transform", mobileServicesOpen && "rotate-180")}
                     />
                   </button>
                 </div>
 
-                {/* Accordion content */}
                 <div
                   className={cn(
                     "overflow-hidden transition-all",
@@ -416,7 +394,7 @@ export default function RootLayout() {
           <div className="space-y-4">
             <div className="flex items-start">
               <img
-                 src="menorah-logo2.png"
+                src="/menorah-logo2.png"   {/* <-- absolute path */}
                 alt="Menorah Health LLP"
                 className="h-16 w-auto object-contain -mt-1 sm:-mt-2"
                 loading="lazy"
@@ -426,26 +404,14 @@ export default function RootLayout() {
 
           {/* Link columns */}
           <nav className="grid grid-cols-2 gap-6 md:col-span-2 md:grid-cols-3">
-            {/* Company */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                Company
-              </h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Company</h4>
               <ul className="space-y-1.5 text-sm">
                 {navPrimary.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       to={href}
-                      className="
-                        relative inline-flex items-center px-0 py-1
-                        text-neutral-700 transition-all
-                        hover:text-neutral-950 hover:-translate-y-0.5
-                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
-                        after:origin-left after:scale-x-0 after:rounded-full
-                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
-                        after:transition-transform after:duration-300
-                        hover:after:scale-x-100
-                      "
+                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
                     >
                       {label}
                     </Link>
@@ -454,26 +420,14 @@ export default function RootLayout() {
               </ul>
             </div>
 
-            {/* Services */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                Services
-              </h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Services</h4>
               <ul className="space-y-1.5 text-sm">
                 {servicesMenu.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       to={href}
-                      className="
-                        relative inline-flex items-center px-0 py-1
-                        text-neutral-700 transition-all
-                        hover:text-neutral-950 hover:-translate-y-0.5
-                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
-                        after:origin-left after:scale-x-0 after:rounded-full
-                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
-                        after:transition-transform after:duration-300
-                        hover:after:scale-x-100
-                      "
+                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
                     >
                       {label}
                     </Link>
@@ -482,11 +436,8 @@ export default function RootLayout() {
               </ul>
             </div>
 
-            {/* Legal (placeholders) */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
-                Legal
-              </h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Legal</h4>
               <ul className="space-y-1.5 text-sm">
                 {[
                   { label: "Privacy Policy", href: "#" },
@@ -496,16 +447,7 @@ export default function RootLayout() {
                   <li key={label}>
                     <a
                       href={href}
-                      className="
-                        relative inline-flex items-center px-0 py-1
-                        text-neutral-700 transition-all
-                        hover:text-neutral-950 hover:-translate-y-0.5
-                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
-                        after:origin-left after:scale-x-0 after:rounded-full
-                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
-                        after:transition-transform after:duration-300
-                        hover:after:scale-x-100
-                      "
+                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
                     >
                       {label}
                     </a>
@@ -518,9 +460,7 @@ export default function RootLayout() {
           {/* Footer CTA + clickable contact */}
           <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm flex flex-col items-start">
             <p className="text-sm font-semibold text-neutral-900">Ready to begin?</p>
-            <p className="mt-1 text-sm text-neutral-600">
-              Start a referral and our team will follow up promptly.
-            </p>
+            <p className="mt-1 text-sm text-neutral-600">Start a referral and our team will follow up promptly.</p>
             <Link
               to="/referral"
               className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
