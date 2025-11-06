@@ -80,7 +80,7 @@ export default function RootLayout() {
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2" aria-label="Menorah Health LLP">
             <img
-              src="/menorah-logo2.png"     {/* <-- absolute path from /public */}
+              src="menorah-logo2.png" 
               alt="Menorah Health LLP"
               className="h-10 w-auto object-contain"
               loading="eager"
@@ -246,7 +246,7 @@ export default function RootLayout() {
             <div className="flex items-center justify-between border-b px-4 py-3">
               <div className="flex items-center gap-2">
                 <img
-                  src="/menorah-logo2.png"   {/* <-- FIXED: no undefined variable */}
+                  src="menorah-logo2.png" 
                   alt="Menorah Health LLP"
                   className="h-9 w-auto object-contain"
                 />
@@ -394,7 +394,7 @@ export default function RootLayout() {
           <div className="space-y-4">
             <div className="flex items-start">
               <img
-                src="/menorah-logo2.png"   {/* <-- absolute path */}
+                src="menorah-logo2.png"
                 alt="Menorah Health LLP"
                 className="h-16 w-auto object-contain -mt-1 sm:-mt-2"
                 loading="lazy"
