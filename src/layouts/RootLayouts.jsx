@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { ArrowRight, Phone, Mail, ChevronDown } from "lucide-react";
-import logo from "../assets/menorah-logo2.png";
+// import logo from "../assets/menorah-logo2.png";
 
 // Top-nav (Home first)
 const navPrimary = [
@@ -65,7 +65,7 @@ export default function RootLayout() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Logo (header size unchanged) */}
           <Link to="/" className="flex items-center" aria-label="Menorah Health LLP">
-            <img src={logo} alt="Menorah Health LLP" className="h-48 w-48 object-contain flex-none" />
+            <img src="menorah-logo2.png" alt="Menorah Health LLP" className="h-48 w-48 object-contain flex-none" />
           </Link>
 
           {/* Desktop nav */}
@@ -209,7 +209,7 @@ export default function RootLayout() {
           <div className="space-y-4">
             <div className="flex items-start">
               <img
-                src={logo}
+                src="menorah-logo2.png"
                 alt="Menorah Health LLP"
                 className="h-48 w-48 object-contain flex-none -mt-2 sm:-mt-3"
                 loading="lazy"
