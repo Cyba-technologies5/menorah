@@ -2,13 +2,14 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { ArrowRight, Phone, Mail, ChevronDown, Menu, X } from "lucide-react";
+import { createPortal } from "react-dom";
 
-// ---- Contact constants (clickable tel/mail) ----
+/* ---------- Contact constants ---------- */
 const PHONE_DISPLAY = "(614) 772-0563";
 const PHONE_E164 = "+16147720563";
 const EMAIL = "menorahhealth@gmail.com";
 
-// ---- Top-nav (Home first) ----
+/* ---------- Primary nav ---------- */
 const navPrimary = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
@@ -18,7 +19,7 @@ const navPrimary = [
   { label: "Contact", href: "/contact" },
 ];
 
-// ---- Services anchors (no child pages under Services) ----
+/* ---------- Services anchors ---------- */
 const servicesMenu = [
   { label: "Skilled Nursing Services", href: "/services#skilled" },
   { label: "Participant-Directed HPC (Homemaker/Personal Care)", href: "/services#hpc" },
@@ -29,14 +30,49 @@ const servicesMenu = [
 
 const cn = (...a) => a.filter(Boolean).join(" ");
 
+/* ---------- Portal host for the mobile drawer ---------- */
+function DrawerPortal({ open, onClose, children }) {
+  if (typeof document === "undefined") return null; // SSR guard
+  return createPortal(
+    <div
+      className={cn(
+        "fixed inset-0 z-[2147483647]", // extremely high z-index
+        open ? "pointer-events-auto" : "pointer-events-none"
+      )}
+      aria-hidden={!open}
+    >
+      {/* Backdrop */}
+      <div
+        className={cn(
+          "absolute inset-0 bg-black/50 transition-opacity",
+          open ? "opacity-100" : "opacity-0"
+        )}
+        onClick={onClose}
+      />
+      {/* Sliding panel shell (solid white) */}
+      <div
+        className={cn(
+          "absolute right-0 top-0 h-full w-[88%] max-w-sm",
+          "bg-white text-neutral-900 shadow-2xl ring-1 ring-black/5",
+          "transition-transform overflow-y-auto",
+          open ? "translate-x-0" : "translate-x-full"
+        )}
+        role="dialog"
+        aria-modal="true"
+      >
+        {children}
+      </div>
+    </div>,
+    document.body
+  );
+}
+
 export default function RootLayout() {
   const year = new Date().getFullYear();
   const { pathname, hash } = useLocation();
 
-  // Desktop services hover dropdown
+  // UI state
   const [servicesOpen, setServicesOpen] = React.useState(false);
-
-  // Mobile drawer + mobile services accordion
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = React.useState(false);
 
@@ -54,33 +90,38 @@ export default function RootLayout() {
   const anyServiceActive =
     pathname === "/services" || servicesMenu.some(({ href }) => isActive(href));
 
-  // Close menus on location change, also smooth scroll to anchors
+  // Close menus on route change & smooth-scroll to hash anchors
   React.useEffect(() => {
     setServicesOpen(false);
     setMobileOpen(false);
     setMobileServicesOpen(false);
-
     if (hash) {
       const el = document.getElementById(hash.slice(1));
       if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [pathname, hash]);
 
-  // Prevent background scroll when mobile drawer open
+  // Lock body scroll when drawer open
   React.useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
   }, [mobileOpen]);
 
+  // Reusable styles for mobile list items (solid cards)
+  const mobileItemBase =
+    "block rounded-xl px-3 py-2 font-semibold bg-white border border-neutral-200 shadow-sm";
+  const mobileAnchorBase =
+    "block rounded-lg px-3 py-1.5 text-sm bg-white border border-neutral-200 shadow-sm text-neutral-800";
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       {/* ===== HEADER ===== */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md">
         <div className="h-[2px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-2" aria-label="Menorah Health LLP">
             <img
-              src="menorah-logo2.png" 
+              src="/menorah-logo2.png"
               alt="Menorah Health LLP"
               className="h-10 w-auto object-contain"
               loading="eager"
@@ -91,6 +132,7 @@ export default function RootLayout() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-6 md:flex">
+            {/* Home */}
             <Link
               to="/"
               aria-current={isActive("/") ? "page" : undefined}
@@ -104,6 +146,7 @@ export default function RootLayout() {
               Home
             </Link>
 
+            {/* About */}
             <Link
               to="/about"
               aria-current={isActive("/about") ? "page" : undefined}
@@ -117,7 +160,7 @@ export default function RootLayout() {
               About Us
             </Link>
 
-            {/* Services link + hover dropdown */}
+            {/* Services + hover dropdown */}
             <div
               className="relative"
               onMouseEnter={() => setServicesOpen(true)}
@@ -142,6 +185,7 @@ export default function RootLayout() {
                 />
               </Link>
 
+              {/* Dropdown panel */}
               <div
                 role="menu"
                 aria-label="Services"
@@ -172,6 +216,7 @@ export default function RootLayout() {
               </div>
             </div>
 
+            {/* Remaining links */}
             {navPrimary
               .filter(({ label }) => !["Home", "About Us", "Services"].includes(label))
               .map(({ label, href }) => {
@@ -198,10 +243,7 @@ export default function RootLayout() {
           <div className="hidden md:block">
             <Link
               to="/referral"
-              className={cn(
-                "inline-flex items-center gap-2 rounded-full px-5 py-2 font-semibold text-white shadow-sm",
-                "bg-amber-600 hover:bg-amber-700"
-              )}
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2 font-semibold text-white shadow-sm bg-amber-600 hover:bg-amber-700"
             >
               Start Referral <ArrowRight className="h-4 w-4" />
             </Link>
@@ -209,178 +251,156 @@ export default function RootLayout() {
 
           {/* Mobile menu button */}
           <button
-            className="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm md:hidden"
+            className="md:hidden inline-flex items-center gap-2 rounded-full border border-amber-600 px-3 py-2 text-sm font-semibold text-amber-700 bg-white shadow-sm hover:bg-amber-50 active:scale-95 transition"
             aria-label="Open menu"
             aria-expanded={mobileOpen}
             onClick={() => setMobileOpen(true)}
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5 text-amber-700" />
             Menu
           </button>
         </div>
 
-        {/* Mobile drawer */}
-        <div
-          className={cn(
-            "fixed inset-0 z-[60] md:hidden",
-            mobileOpen ? "pointer-events-auto" : "pointer-events-none"
-          )}
-          aria-hidden={!mobileOpen}
-        >
-          {/* Backdrop */}
-          <div
-            className={cn(
-              "absolute inset-0 bg-black/30 transition-opacity",
-              mobileOpen ? "opacity-100" : "opacity-0"
-            )}
-            onClick={() => setMobileOpen(false)}
-          />
+        <div className="border-b border-neutral-200" />
+      </header>
 
-          {/* Panel */}
-          <div
+      {/* ===== MOBILE DRAWER (single instance via portal) ===== */}
+      <DrawerPortal open={mobileOpen} onClose={() => setMobileOpen(false)}>
+        <div className="flex items-center justify-between border-b px-4 py-3 bg-white">
+          <div className="flex items-center gap-2">
+            <img
+              src="/menorah-logo2.png"
+              alt="Menorah Health LLP"
+              className="h-9 w-auto object-contain"
+            />
+          </div>
+          <button
+            aria-label="Close menu"
+            className="rounded-full p-2 hover:bg-neutral-100"
+            onClick={() => setMobileOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        <nav className="px-2 py-3 space-y-1 bg-white text-neutral-900">
+          {/* Home */}
+          <Link
+            to="/"
+            onClick={() => setMobileOpen(false)}
             className={cn(
-              "absolute right-0 top-0 h-full w-[88%] max-w-sm bg-white shadow-2xl ring-1 ring-black/5 transition-transform",
-              mobileOpen ? "translate-x-0" : "translate-x-full"
+              mobileItemBase,
+              isActive("/") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
             )}
           >
-            <div className="flex items-center justify-between border-b px-4 py-3">
-              <div className="flex items-center gap-2">
-                <img
-                  src="menorah-logo2.png" 
-                  alt="Menorah Health LLP"
-                  className="h-9 w-auto object-contain"
-                />
-              </div>
-              <button
-                aria-label="Close menu"
-                className="rounded-full p-2 hover:bg-neutral-100"
+            Home
+          </Link>
+
+          {/* About */}
+          <Link
+            to="/about"
+            onClick={() => setMobileOpen(false)}
+            className={cn(
+              mobileItemBase,
+              isActive("/about") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
+            )}
+          >
+            About Us
+          </Link>
+
+          {/* Services + accordion */}
+          <div className="space-y-1">
+            <div className="flex items-center">
+              <Link
+                to="/services"
                 onClick={() => setMobileOpen(false)}
+                className={cn(
+                  mobileItemBase + " flex-1",
+                  anyServiceActive ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
+                )}
               >
-                <X className="h-5 w-5" />
+                Services
+              </Link>
+              <button
+                type="button"
+                aria-expanded={mobileServicesOpen}
+                onClick={() => setMobileServicesOpen((v) => !v)}
+                className="ml-2 inline-flex items-center rounded-lg px-2 py-2 hover:bg-neutral-100 border border-neutral-200 bg-white shadow-sm"
+              >
+                <ChevronDown
+                  className={cn("h-5 w-5 transition-transform", mobileServicesOpen && "rotate-180")}
+                />
               </button>
             </div>
 
-            {/* Links */}
-            <nav className="px-2 py-3">
-              <Link
-                to="/"
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "block rounded-xl px-3 py-2 font-semibold",
-                  isActive("/") ? "bg-amber-50 text-amber-900" : "hover:bg-neutral-50"
-                )}
-              >
-                Home
-              </Link>
-
-              <Link
-                to="/about"
-                onClick={() => setMobileOpen(false)}
-                className={cn(
-                  "mt-1 block rounded-xl px-3 py-2 font-semibold",
-                  isActive("/about") ? "bg-amber-50 text-amber-900" : "hover:bg-neutral-50"
-                )}
-              >
-                About Us
-              </Link>
-
-              {/* Services (accordion) */}
-              <div className="mt-1">
-                <div className="flex items-center">
-                  <Link
-                    to="/services"
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "flex-1 rounded-xl px-3 py-2 font-semibold",
-                      anyServiceActive ? "bg-amber-50 text-amber-900" : "hover:bg-neutral-50"
-                    )}
-                  >
-                    Services
-                  </Link>
-                  <button
-                    type="button"
-                    aria-expanded={mobileServicesOpen}
-                    onClick={() => setMobileServicesOpen((v) => !v)}
-                    className="mx-2 inline-flex items-center rounded-lg px-2 py-2 hover:bg-neutral-50"
-                  >
-                    <ChevronDown
-                      className={cn("h-5 w-5 transition-transform", mobileServicesOpen && "rotate-180")}
-                    />
-                  </button>
-                </div>
-
-                <div
-                  className={cn(
-                    "overflow-hidden transition-all",
-                    mobileServicesOpen ? "max-h-[480px]" : "max-h-0"
-                  )}
-                >
-                  <ul className="mt-1 space-y-1 border-l pl-4">
-                    {servicesMenu.map(({ label, href }) => (
-                      <li key={label}>
-                        <Link
-                          to={href}
-                          onClick={() => setMobileOpen(false)}
-                          className="block rounded-lg px-3 py-1.5 text-sm text-neutral-700 hover:bg-neutral-50"
-                        >
-                          {label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-
-              {/* The rest */}
-              {navPrimary
-                .filter(({ label }) => !["Home", "About Us", "Services"].includes(label))
-                .map(({ label, href }) => (
-                  <Link
-                    key={label}
-                    to={href}
-                    onClick={() => setMobileOpen(false)}
-                    className={cn(
-                      "mt-1 block rounded-xl px-3 py-2 font-semibold",
-                      isActive(href) ? "bg-amber-50 text-amber-900" : "hover:bg-neutral-50"
-                    )}
-                  >
-                    {label}
-                  </Link>
+            <div
+              className={cn(
+                "overflow-hidden transition-all",
+                mobileServicesOpen ? "max-h-[480px]" : "max-h-0"
+              )}
+            >
+              <ul className="mt-1 space-y-1 border-l pl-4">
+                {servicesMenu.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link
+                      to={href}
+                      onClick={() => setMobileOpen(false)}
+                      className={cn(mobileAnchorBase, "hover:bg-neutral-50")}
+                    >
+                      {label}
+                    </Link>
+                  </li>
                 ))}
-
-              {/* CTA + contact */}
-              <div className="mt-4 border-t pt-4">
-                <Link
-                  to="/referral"
-                  onClick={() => setMobileOpen(false)}
-                  className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
-                >
-                  Start Referral <ArrowRight className="h-4 w-4" />
-                </Link>
-
-                <div className="mt-6 space-y-2 text-sm">
-                  <a
-                    href={`tel:${PHONE_E164}`}
-                    className="flex items-center gap-2 hover:text-neutral-950 hover:underline underline-offset-4"
-                  >
-                    <Phone className="h-4 w-4 text-amber-700" />
-                    {PHONE_DISPLAY}
-                  </a>
-                  <a
-                    href={`mailto:${EMAIL}`}
-                    className="flex items-center gap-2 hover:text-neutral-950 hover:underline underline-offset-4 break-all"
-                  >
-                    <Mail className="h-4 w-4 text-amber-700" />
-                    {EMAIL}
-                  </a>
-                </div>
-              </div>
-            </nav>
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <div className="border-b border-neutral-200" />
-      </header>
+          {/* Remaining links */}
+          {navPrimary
+            .filter(({ label }) => !["Home", "About Us", "Services"].includes(label))
+            .map(({ label, href }) => (
+              <Link
+                key={label}
+                to={href}
+                onClick={() => setMobileOpen(false)}
+                className={cn(
+                  mobileItemBase,
+                  isActive(href) ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
+                )}
+              >
+                {label}
+              </Link>
+            ))}
+
+          {/* CTA + contact */}
+          <div className="mt-3 border-t pt-4">
+            <Link
+              to="/referral"
+              onClick={() => setMobileOpen(false)}
+              className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 shadow-sm"
+            >
+              Start Referral <ArrowRight className="h-4 w-4" />
+            </Link>
+
+            <div className="mt-6 space-y-2 text-sm">
+              <a
+                href={`tel:${PHONE_E164}`}
+                className="flex items-center gap-2 hover:text-neutral-950 hover:underline underline-offset-4"
+              >
+                <Phone className="h-4 w-4 text-amber-700" />
+                {PHONE_DISPLAY}
+              </a>
+              <a
+                href={`mailto:${EMAIL}`}
+                className="flex items-center gap-2 hover:text-neutral-950 hover:underline underline-offset-4 break-all"
+              >
+                <Mail className="h-4 w-4 text-amber-700" />
+                {EMAIL}
+              </a>
+            </div>
+          </div>
+        </nav>
+      </DrawerPortal>
 
       {/* ===== CONTENT ===== */}
       <Outlet />
@@ -390,11 +410,11 @@ export default function RootLayout() {
         <div className="h-[2px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
 
         <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
-          {/* Brand column */}
+          {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-start">
               <img
-                src="menorah-logo2.png"
+                src="/menorah-logo2.png"
                 alt="Menorah Health LLP"
                 className="h-16 w-auto object-contain -mt-1 sm:-mt-2"
                 loading="lazy"
@@ -404,14 +424,26 @@ export default function RootLayout() {
 
           {/* Link columns */}
           <nav className="grid grid-cols-2 gap-6 md:col-span-2 md:grid-cols-3">
+            {/* Company */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Company</h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Company
+              </h4>
               <ul className="space-y-1.5 text-sm">
                 {navPrimary.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       to={href}
-                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                      className="
+                        relative inline-flex items-center px-0 py-1
+                        text-neutral-700 transition-all
+                        hover:text-neutral-950 hover:-translate-y-0.5
+                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
+                        after:origin-left after:scale-x-0 after:rounded-full
+                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
+                        after:transition-transform after:duration-300
+                        hover:after:scale-x-100
+                      "
                     >
                       {label}
                     </Link>
@@ -420,14 +452,26 @@ export default function RootLayout() {
               </ul>
             </div>
 
+            {/* Services */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Services</h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Services
+              </h4>
               <ul className="space-y-1.5 text-sm">
                 {servicesMenu.map(({ label, href }) => (
                   <li key={label}>
                     <Link
                       to={href}
-                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                      className="
+                        relative inline-flex items-center px-0 py-1
+                        text-neutral-700 transition-all
+                        hover:text-neutral-950 hover:-translate-y-0.5
+                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
+                        after:origin-left after:scale-x-0 after:rounded-full
+                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
+                        after:transition-transform after:duration-300
+                        hover:after:scale-x-100
+                      "
                     >
                       {label}
                     </Link>
@@ -436,8 +480,11 @@ export default function RootLayout() {
               </ul>
             </div>
 
+            {/* Legal (placeholders) */}
             <div>
-              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">Legal</h4>
+              <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+                Legal
+              </h4>
               <ul className="space-y-1.5 text-sm">
                 {[
                   { label: "Privacy Policy", href: "#" },
@@ -447,7 +494,16 @@ export default function RootLayout() {
                   <li key={label}>
                     <a
                       href={href}
-                      className="relative inline-flex items-center px-0 py-1 text-neutral-700 transition-all hover:text-neutral-950 hover:-translate-y-0.5 after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full after:bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 after:transition-transform after:duration-300 hover:after:scale-x-100"
+                      className="
+                        relative inline-flex items-center px-0 py-1
+                        text-neutral-700 transition-all
+                        hover:text-neutral-950 hover:-translate-y-0.5
+                        after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-full
+                        after:origin-left after:scale-x-0 after:rounded-full
+                        after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700
+                        after:transition-transform after:duration-300
+                        hover:after:scale-x-100
+                      "
                     >
                       {label}
                     </a>
@@ -460,7 +516,9 @@ export default function RootLayout() {
           {/* Footer CTA + clickable contact */}
           <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm flex flex-col items-start">
             <p className="text-sm font-semibold text-neutral-900">Ready to begin?</p>
-            <p className="mt-1 text-sm text-neutral-600">Start a referral and our team will follow up promptly.</p>
+            <p className="mt-1 text-sm text-neutral-600">
+              Start a referral and our team will follow up promptly.
+            </p>
             <Link
               to="/referral"
               className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
