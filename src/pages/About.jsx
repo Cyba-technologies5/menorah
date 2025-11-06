@@ -16,9 +16,11 @@ import {
 } from "lucide-react";
 import Seo from "../components/Seo.jsx";
 
-// Local assets
+// Local assets (kept under /src so Vite fingerprints it)
 import heroImage from "../assets/about/aboutHero.jpg";
-import logo from "../assets/menorah-logo2.png";
+
+// Public logo (put the file at: /public/menorah-logo2.png)
+const PUBLIC_LOGO = "/menorah-logo2.png";
 
 // ------- Content -------
 const VISION =
@@ -84,18 +86,22 @@ export default function About() {
   const pageTitle = `About Us • ${siteName}`;
   const description =
     "A trusted partner in home health & DODD support. We combine regulatory excellence with compassionate, person-centred care across the community.";
+
   const canonical =
     typeof window !== "undefined"
       ? `${window.location.origin}/about`
       : "https://example.com/about";
+
   const orgUrl =
     typeof window !== "undefined" ? window.location.origin : "https://example.com";
 
-  // Ensure absolute OG image URL for social previews
+  // Absolute OG image URL for social previews
   const ogImage =
-    typeof heroImage === "string" && heroImage.startsWith("http")
-      ? heroImage
-      : `${orgUrl}${heroImage?.startsWith("/") ? "" : "/"}${heroImage}`;
+    typeof heroImage === "string" && heroImage
+      ? heroImage.startsWith("http")
+        ? heroImage
+        : `${orgUrl}${heroImage.startsWith("/") ? "" : "/"}${heroImage}`
+      : `${orgUrl}${PUBLIC_LOGO}`;
 
   // Organization JSON-LD
   const orgJsonLd = {
@@ -103,7 +109,7 @@ export default function About() {
     "@type": "Organization",
     name: siteName,
     url: orgUrl,
-    logo: `${orgUrl}${logo?.startsWith("/") ? "" : "/"}${logo}`,
+    logo: `${orgUrl}${PUBLIC_LOGO}`,
     sameAs: [], // add socials when ready
     contactPoint: [
       {
@@ -154,7 +160,7 @@ export default function About() {
 
   return (
     <main id="about" className="bg-white text-neutral-900">
-      {/* ======= SEO (no Helmet needed) ======= */}
+      {/* ======= SEO ======= */}
       <Seo
         title={pageTitle}
         description={description}
@@ -168,39 +174,38 @@ export default function About() {
           "Respite care for adults with disabilities",
           "CPR Training near me",
         ]}
-        jsonLd={[orgJsonLd, faqJsonLd]} // pass multiple schemas in one block
+        jsonLd={[orgJsonLd, faqJsonLd]}
       />
 
       {/* ========= HERO ========= */}
-    <section className="relative overflow-hidden">
-  {/* background image */}
-  <img
-    src={heroImage}
-    alt="Care professional providing warm, person-centred home support"
-    className="absolute inset-0 z-0 h-[420px] w-full object-cover sm:h-[520px]"
-    loading="eager"
-    decoding="async"
-    fetchpriority="high"
-  />
+      <section className="relative overflow-hidden">
+        {/* background image */}
+        <img
+          src={heroImage}
+          alt="Care professional providing warm, person-centred home support"
+          className="absolute inset-0 z-0 h-[420px] w-full object-cover sm:h-[520px]"
+          loading="eager"
+          decoding="async"
+          fetchPriority="high"
+        />
 
-  {/* gradient overlay */}
-  <div className="absolute inset-0 z-10 bg-gradient-to-r from-white via-white/80 to-transparent" />
+        {/* gradient overlay */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-r from-white via-white/80 to-transparent" />
 
-  {/* content */}
-  <div className="relative z-20 mx-auto flex min-h-[420px] max-w-7xl items-end px-4 pb-10 sm:min-h-[520px] sm:px-6 lg:px-8">
-    <div className="rounded-3xl bg-white/90 p-6 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm sm:p-10">
-      <p className="text-xs font-semibold tracking-wider text-amber-700">ABOUT US</p>
-      <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
-        A trusted partner in home health &amp; DODD support
-      </h1>
-      <p className="mt-3 max-w-2xl text-neutral-700">
-        We’re committed to regulatory excellence and exceptional client care—so people feel
-        safe, respected, and supported at home.
-      </p>
-    </div>
-  </div>
-</section>
-
+        {/* content */}
+        <div className="relative z-20 mx-auto flex min-h-[420px] max-w-7xl items-end px-4 pb-10 sm:min-h-[520px] sm:px-6 lg:px-8">
+          <div className="rounded-3xl bg-white/90 p-6 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm sm:p-10">
+            <p className="text-xs font-semibold tracking-wider text-amber-700">ABOUT US</p>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
+              A trusted partner in home health &amp; DODD support
+            </h1>
+            <p className="mt-3 max-w-2xl text-neutral-700">
+              We’re committed to regulatory excellence and exceptional client care—so people feel
+              safe, respected, and supported at home.
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* ========= VISION & MISSION ========= */}
       <section className="py-12">
@@ -352,15 +357,18 @@ export default function About() {
             {[
               {
                 q: "Do you accept Medicaid waiver clients?",
-                a: "Yes. We support adults with developmental disabilities under applicable Medicaid waiver programmes.",
+                a:
+                  "Yes. We support adults with developmental disabilities under applicable Medicaid waiver programmes.",
               },
               {
                 q: "How quickly can services start?",
-                a: "We typically respond within 24 hours. Start of care depends on eligibility, assessment, and scheduling.",
+                a:
+                  "We typically respond within 24 hours. Start of care depends on eligibility, assessment, and scheduling.",
               },
               {
                 q: "Can I choose my caregiver?",
-                a: "Yes—especially under Participant-Directed HPC. We work with you to match skills, availability, and preferences.",
+                a:
+                  "Yes—especially under Participant-Directed HPC. We work with you to match skills, availability, and preferences.",
               },
             ].map(({ q, a }) => (
               <details key={q} className="group p-4">

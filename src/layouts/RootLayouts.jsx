@@ -2,7 +2,7 @@
 import React from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { ArrowRight, Phone, Mail, ChevronDown } from "lucide-react";
-// import logo from "../assets/menorah-logo2.png";
+
 
 // Top-nav (Home first)
 const navPrimary = [
