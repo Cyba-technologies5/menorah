@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Seo from "../components/Seo.jsx";
+import ctaBg from "../assets/services/ctaBgImg.jpg";
 
 // Re-use your hero; swap to a dedicated portal image anytime
 import heroImage from "../assets/about/heroImage.png";
@@ -274,46 +275,63 @@ export default function EmploymentPortal() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-14">
-        <div className="absolute inset-0 -z-10 bg-amber-50" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-6 rounded-3xl border border-amber-200 bg-white p-6 shadow-sm sm:grid-cols-3 sm:p-10">
-            <div className="sm:col-span-2">
-              <p className="text-sm font-semibold tracking-wide text-amber-700">
+     <section className="relative isolate overflow-hidden py-16 sm:py-24">
+       {/* Background image */}
+       <img
+         src={ctaBg}
+         alt=""
+         aria-hidden="true"
+         className="absolute inset-0 z-0 h-full w-full object-cover"
+         loading="lazy"
+       />
+     
+       {/* Overlays (lighter + brand amber) */}
+       <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/25 to-black/60" />
+       <div className="absolute inset-0 z-10 bg-amber-900/20 mix-blend-multiply" />
+       <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),transparent_60%)]" />
+     
+       {/* Content */}
+       <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+         <div className="mx-auto max-w-3xl text-center">
+           <div className="rounded-3xl border border-white/15 bg-white/10 p-8 shadow-2xl ring-1 ring-black/10 backdrop-blur-xl sm:p-12">
+             <p className="text-xs font-semibold capitalize tracking-[0.18em] text-amber-200">
                 Ready to take the next step?
-              </p>
-              <h4 className="mt-1 text-2xl font-extrabold tracking-tight">
-                Join a values-driven team.
-              </h4>
-              <p className="mt-2 max-w-2xl text-neutral-700">
-                Apply via our General Inquiry page. We’ll follow up promptly.
-              </p>
-              <div className="mt-5 flex flex-wrap gap-3">
-                <a
-                  href="/inquiries"
-                  className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-amber-700"
-                >
-                  Apply / Inquiry <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="/about"
-                  className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-6 py-3 font-semibold text-neutral-900 hover:border-neutral-400"
-                >
-                  Learn About Menorah
-                </a>
-              </div>
-            </div>
-            <div className="rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm">
-              <p className="text-sm font-semibold text-neutral-900">Quick links</p>
-              <ul className="mt-2 list-inside list-disc text-sm text-neutral-700">
-                <li><a className="hover:underline" href="#current">Current Employees</a></li>
-                <li><a className="hover:underline" href="#future">Future Employees</a></li>
-                <li><a className="hover:underline" href="/services">Services</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
+             </p>
+     
+             <h4 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+               Join a values-driven team.
+             </h4>
+     
+             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/85">
+               Apply via our General Inquiry page. We’ll follow up promptly.
+             </p>
+     
+             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+               <a
+                 href="/inquiries"
+                 className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-7 py-3 font-semibold text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition hover:from-amber-600 hover:to-amber-700"
+               >
+                 Apply / Inquiry
+                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+               </a>
+     
+               <a
+                 href="/about"
+                 className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-7 py-3 font-semibold text-white backdrop-blur transition hover:bg-white/15"
+               >
+                 Learn About Menorah
+               </a>
+             </div>
+     
+             <div className="mx-auto mt-8 h-px w-24 bg-white/20" />
+             <p className="mt-4 text-xs text-white/70">
+               Menorah Health LLP • In-home support across Franklin & Delaware counties
+             </p>
+           </div>
+         </div>
+       </div>
+     </section>
+     
     </main>
   );
 }

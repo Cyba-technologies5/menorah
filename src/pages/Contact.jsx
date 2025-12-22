@@ -243,7 +243,8 @@ export default function Contact() {
               <h2 className="text-xl font-extrabold tracking-tight">Talk to us</h2>
               <div className="mt-4 space-y-3 text-sm text-neutral-800">
                 <p className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-amber-700" /> (614) 772-0563
+                  <Phone className="h-4 w-4 text-amber-700" />
+                  <a href="tel:+1 (614) 8311177"> +1 (614) 8311177</a>
                 </p>
                 <p className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-amber-700" />{" "}
@@ -526,12 +527,12 @@ export default function Contact() {
                   <Send className="h-4 w-4" />
                   {submitting ? "Sending…" : "Send Message"}
                 </button>
-                <Link
+                {/* <Link
                   to="/about"
                   className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold text-neutral-900 hover:border-neutral-400"
                 >
                   Learn About Us
-                </Link>
+                </Link> */}
               </div>
 
               {/* Status */}

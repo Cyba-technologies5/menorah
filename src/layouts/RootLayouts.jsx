@@ -5,8 +5,8 @@ import { ArrowRight, Phone, Mail, ChevronDown, Menu, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 /* ---------- Contact constants ---------- */
-const PHONE_DISPLAY = "(614) 772-0563";
-const PHONE_E164 = "+16147720563";
+const PHONE_DISPLAY = "+1 (614) 8311177";
+const PHONE_E164 = "+1 (614) 8311177";
 const EMAIL = "menorahhealth@gmail.com";
 
 /* ---------- Primary nav ---------- */
@@ -21,11 +21,12 @@ const navPrimary = [
 
 /* ---------- Services anchors ---------- */
 const servicesMenu = [
-  { label: "Skilled Nursing Services", href: "/services#skilled" },
-  { label: "Participant-Directed HPC (Homemaker/Personal Care)", href: "/services#hpc" },
-  { label: "Aided Living & Personal Care Services", href: "/services#personal" },
-  { label: "Respite Care", href: "/services#respite" },
+  { label: "Skilled Nursing Services", href: "/services" },
+  { label: "Participant-Directed HPC (Homemaker/Personal Care)", href: "/services" },
+  { label: "Supported Living and Homemaker Services", href: "/services" },
+  { label: "Respite Care", href: "/services" },
   { label: "CPR & Emergency Training", href: "/cpr" },
+  { label: "Money Management", href: "/services" },
 ];
 
 const cn = (...a) => a.filter(Boolean).join(" ");
@@ -243,7 +244,7 @@ export default function RootLayout() {
           <div className="hidden md:block">
             <Link
               to="/referral"
-              className="inline-flex items-center gap-2 rounded-full px-5 py-2 font-semibold text-white shadow-sm bg-amber-600 hover:bg-amber-700"
+              className="inline-flex items-center gap-2 rounded-xl px-5 py-2 font-semibold text-white shadow-sm bg-amber-600 hover:bg-amber-700"
             >
               Start Referral <ArrowRight className="h-4 w-4" />
             </Link>
@@ -276,7 +277,7 @@ export default function RootLayout() {
           </div>
           <button
             aria-label="Close menu"
-            className="rounded-full p-2 hover:bg-neutral-100"
+            className="rounded-xl p-2 hover:bg-neutral-100"
             onClick={() => setMobileOpen(false)}
           >
             <X className="h-5 w-5" />
@@ -374,13 +375,9 @@ export default function RootLayout() {
 
           {/* CTA + contact */}
           <div className="mt-3 border-t pt-4">
-            <Link
-              to="/referral"
-              onClick={() => setMobileOpen(false)}
-              className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 shadow-sm"
-            >
-              Start Referral <ArrowRight className="h-4 w-4" />
-            </Link>
+             <Link to="/referral" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700">
+                            Start Referral <ArrowRight className="h-4 w-4" />
+                          </Link>
 
             <div className="mt-6 space-y-2 text-sm">
               <a
@@ -519,12 +516,9 @@ export default function RootLayout() {
             <p className="mt-1 text-sm text-neutral-600">
               Start a referral and our team will follow up promptly.
             </p>
-            <Link
-              to="/referral"
-              className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700"
-            >
-              Start Referral <ArrowRight className="h-4 w-4" />
-            </Link>
+             <Link to="/referral" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700">
+                            Start Referral <ArrowRight className="h-4 w-4" />
+                          </Link>
 
             <div className="space-y-1 text-sm text-neutral-700 mt-6">
               <a

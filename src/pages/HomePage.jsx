@@ -14,6 +14,7 @@ import skilled from "../assets/skillednursing.jpg.jpg";
 import hpc from "../assets/participant-hpc.jpg";
 import respite from "../assets/respite-care.jpg";
 import cprImg from "../assets/cpr-training.jpg";
+import moneyManagement from "../assets/money-management.jpg";
 
 // ----- DATA -----
 const coreValues = [
@@ -28,9 +29,9 @@ const coreValues = [
 
 const services = [
   {
-    title: "Skilled Nursing",
+    title: "Skilled Nursing /DD Waiver Nursing",
     img: skilled,
-    text: "Medication management, monitoring, wound care, IV therapy, mobility, education; coordination with physicians.",
+    text: "Insulin administration, tube feeding, wound care, blood sugar monitoring, mobility, education; coordination with physicians.",
   },
   {
     title: "Participant-Directed HPC",
@@ -38,7 +39,7 @@ const services = [
     text: "You choose your caregiver; we provide training, support and oversight.",
   },
   {
-    title: "Aided Living & Personal Care",
+    title: "Supported Living and Homemaker Services",
     img: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&w=1200&auto=format&fit=crop",
     text: "Bathing & grooming, dressing, meal prep/feeding, mobility help, housekeeping, companionship.",
   },
@@ -47,14 +48,29 @@ const services = [
     img: respite,
     text: "Short-term relief, scheduled or emergency, giving families time to recharge.",
   },
-];
-
-const cpr = {
+  {
   title: "CPR & Emergency Training",
   fee: "$70",
   img: cprImg,
   text: "Adult/child/infant CPR, AED usage, choking response, scene management. Employer-accepted certification.",
-};
+},
+{
+          title: "Money Management",
+          img: moneyManagement,
+          showText: true,
+          text:
+            "Practical financial coaching to help you reach your goals. We clarify objectives, create simple plans, and track progress so money supports the life and health outcomes you want.",
+          ctaHref: "/referral",
+          ctaLabel: "Request this service",
+        },
+];
+
+// const cpr = {
+//   title: "CPR & Emergency Training",
+//   fee: "$70",
+//   img: cprImg,
+//   text: "Adult/child/infant CPR, AED usage, choking response, scene management. Employer-accepted certification.",
+// };
 
 const navLinks = [
   { label: "About Us", href: "#about" },
@@ -67,11 +83,11 @@ const navLinks = [
 export default function HomePage() {
   const year = new Date().getFullYear();
   const [activeCounty, setActiveCounty] = React.useState("Franklin");
-  const counties = [
-    { label: "Franklin", href: "#franklin" },
-    { label: "Delaware", href: "#delaware" },
-    { label: "Other Counties", href: "#other-counties" },
-  ];
+  // const counties = [
+  //   { label: "Franklin", href: "#franklin" },
+  //   { label: "Delaware", href: "#delaware" },
+  //   { label: "Other Counties", href: "#other-counties" },
+  // ];
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
@@ -89,12 +105,12 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="rounded-3xl bg-white/95 px-6 py-8 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm sm:px-12 sm:py-12">
               <h1 className="text-center text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl">
-                Home health &amp; DODD support across
+              Person-Centered   
                 <br className="hidden sm:block" />
-                Franklin &amp; Delaware Counties
+                 Home Healthcare Services
               </h1>
               <p className="mx-auto mt-3 max-w-3xl text-center text-lg text-neutral-700">
-                We provide Medicaid waiver services for adults with developmental disabilities.
+                We provide home health services with Medicaid waiver services forindividuals include those with developmental disabilities.
               </p>
               <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                 <Link
@@ -104,10 +120,10 @@ export default function HomePage() {
                   Start Referral
                 </Link>
                 <a
-                  href="tel:+16147720563"
+                  href="tel:+1 (614) 8311177"
                   className="inline-flex items-center gap-2 rounded-xl border border-neutral-300 bg-white px-6 py-3 font-semibold text-neutral-900 hover:border-neutral-400"
                 >
-                  Call (614) 772-0563
+                  Call +1 (614) 8311177
                 </a>
               </div>
             </div>
@@ -139,7 +155,7 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {services.map((s) => (
               <article key={s.title} className="group relative overflow-hidden rounded-3xl bg-white ring-1 ring-black/5 shadow-md transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
                 <div className="relative">
@@ -160,7 +176,7 @@ export default function HomePage() {
             ))}
 
             {/* CPR highlight */}
-            <article className="relative overflow-hidden rounded-3xl ring-1 ring-amber-200 shadow-md sm:col-span-2 lg:col-span-2">
+            {/* <article className="relative overflow-hidden rounded-3xl ring-1 ring-amber-200 shadow-md sm:col-span-2 lg:col-span-2">
               <img src={cpr.img} alt={cpr.title} className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-r from-amber-900/70 via-amber-800/40 to-amber-600/30" />
               <div className="relative grid gap-4 p-6 sm:grid-cols-2 sm:p-10 text-white">
@@ -169,7 +185,7 @@ export default function HomePage() {
                   <h3 className="mt-3 text-2xl font-extrabold tracking-tight">{cpr.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-white/90">{cpr.text}</p>
                   <div className="mt-4 flex items-center gap-3">
-                    <span className="inline-flex items-center rounded-full bg-white px-3 py-1 text-sm font-semibold text-amber-800 shadow">Fee {cpr.fee}</span>
+                    <span className="inline-flex items-center rounded-xl bg-white px-3 py-1 text-sm font-semibold text-amber-800 shadow">Fee {cpr.fee}</span>
                     <Link to="/cpr" className="inline-flex items-center gap-1 text-sm font-semibold text-white hover:underline">
                       Register <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -177,13 +193,13 @@ export default function HomePage() {
                 </div>
                 <div className="hidden sm:block" />
               </div>
-            </article>
+            </article> */}
           </div>
         </div>
       </section>
 
       {/* ========= COUNTIES ========= */}
-      <section className="py-10">
+      {/* <section className="py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="rounded-2xl border border-neutral-200 p-6 shadow-sm">
             <h3 className="mb-4 text-2xl font-extrabold tracking-tight">Counties We Serve</h3>
@@ -213,7 +229,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ========= WHAT TO EXPECT ========= */}
       <section id="what-to-expect" className="py-12">
@@ -252,7 +268,7 @@ export default function HomePage() {
                 <li>We craft a personalised care plan and begin services</li>
               </ol>
               <div className="mt-5 text-sm text-neutral-600">
-                Prefer to talk? <a href="tel:+16147720563" className="font-semibold text-amber-700 hover:underline">(614) 772-0563</a>
+                Prefer to talk? <a href="tel:+1 (614) 8311177" className="font-semibold text-amber-700 hover:underline">+1 (614) 8311177</a>
               </div>
             </article>
           </div>
@@ -284,7 +300,7 @@ export default function HomePage() {
                 </Link>
                 </div>
                 <div className="mt-4 text-sm text-neutral-700">
-                  Prefer to talk? <a href="tel:+16147720563" className="font-semibold text-amber-700 hover:underline">(614) 772-0563</a> ·
+                  Prefer to talk? <a href="tel:+1 (614) 8311177" className="font-semibold text-amber-700 hover:underline">+1 (614) 8311177</a> ·
                   Email: <a href="mailto:menorahhealth@gmail.com" className="font-semibold text-amber-700 hover:underline">menorahhealth@gmail.com</a>
                 </div>
               </div>
@@ -310,7 +326,7 @@ export default function HomePage() {
                     <li>Message & attachments</li>
                     <li>Consent acknowledgment</li>
                   </ul>
-                  <a href="#inquiries" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700 hover:underline">
+                  <a href="/inquiries" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-amber-700 hover:underline">
                     Go to General Inquiries <ArrowRight className="h-4 w-4" />
                   </a>
                 </div>

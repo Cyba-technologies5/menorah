@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Seo from "../components/Seo.jsx";
+import ctaBg from "../assets/services/ctaBgImg.jpg";
 
 // Reuse your working hero; swap to a dedicated image anytime.
 import heroImage from "../assets/about/heroImage.png";
@@ -259,29 +260,63 @@ export default function PatientPortal() {
         </div>
       </section>
 
-      {/* NOT YET A PATIENT */}
-      <section className="pb-6">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <article className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm ring-1 ring-black/5">
-            <h3 className="text-xl font-extrabold tracking-tight">Not yet a patient?</h3>
-            <p className="mt-2 max-w-3xl text-neutral-700">
-              If you're interested in starting services, visit our Referral & Intake page to begin.
-            </p>
-            <div className="mt-4">
-              <Link
-                to="/referral"
-                className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-amber-700"
-              >
-                Start Referral & Intake <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </article>
-        </div>
-      </section>
+     {/* NOT YET A PATIENT */}
+<section className="relative isolate overflow-hidden py-10">
+  {/* Background image */}
+  <img
+    src={ctaBg}
+    alt=""
+    aria-hidden="true"
+    className="absolute inset-0 z-0 h-full w-full object-cover"
+  />
+
+  {/* Soft overlay (lighter so image shows) */}
+  <div className="absolute inset-0 z-10 " />
+{/* Overlays (lighter + brand amber) */}
+  <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/25 to-black/60" />
+  <div className="absolute inset-0 z-10 bg-amber-900/20 mix-blend-multiply" />
+  <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),transparent_60%)]" />
+  {/* Content */}
+  <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <article className="rounded-3xl border border-neutral-200 bg-white/95 p-6 shadow-md ring-1 ring-black/5 backdrop-blur">
+      <h3 className="text-xl font-extrabold tracking-tight">
+        Not yet a patient?
+      </h3>
+
+      <p className="mt-2 max-w-3xl text-neutral-700">
+        If you're interested in starting services, visit our Referral & Intake page to begin.
+      </p>
+
+      <div className="mt-4">
+        <Link
+          to="/referral"
+          className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-amber-700"
+        >
+          Start Referral & Intake <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </article>
+  </div>
+</section>
+
+
 
       {/* QUICK LINKS */}
-      <section className="pb-14">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative isolate overflow-hidden py-10 pb-14">
+        {/* Background image */}
+  <img
+    src={ctaBg}
+    alt=""
+    aria-hidden="true"
+    className="absolute inset-0 z-0 h-full w-full object-cover"
+  />
+  {/* Soft overlay (lighter so image shows) */}
+  <div className="absolute inset-0 z-10 " />
+  {/* Overlays (lighter + brand amber) */}
+  <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/25 to-black/60" />
+  <div className="absolute inset-0 z-10 bg-amber-900/20 mix-blend-multiply" />
+  <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),transparent_60%)]" />
+        <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-6 sm:grid-cols-3">
             <Link
               to="/about"

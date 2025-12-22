@@ -15,6 +15,7 @@ import {
   Clock,
 } from "lucide-react";
 import Seo from "../components/Seo.jsx";
+import ctaBg from "../assets/services/ctaBgImg.jpg";
 
 // Local assets (kept under /src so Vite fingerprints it)
 import heroImage from "../assets/about/aboutHero.jpg";
@@ -75,11 +76,12 @@ const values = [
 ];
 
 const stats = [
-  { icon: Users, label: "Clients served", value: "250+" },
-  { icon: CheckCircle2, label: "Client satisfaction", value: "98%" },
   { icon: Clock, label: "Avg. response time", value: "< 24 hrs" },
-  { icon: Award, label: "Years combined experience", value: "30+" },
+  { icon: Award, label: "Years combined experience", value: "10+" },
+  { icon: Users, label: "Individuals supported", value: "100+" },
+  { icon: ShieldCheck, label: "Compliance & safeguarding", value: "100%" },
 ];
+
 
 export default function About() {
   const siteName = "Menorah Health LLP";
@@ -134,7 +136,7 @@ export default function About() {
         acceptedAnswer: {
           "@type": "Answer",
           text:
-            "Yes. We support adults with developmental disabilities under applicable Medicaid waiver programmes.",
+            "Yes. We support individuals with developmental disabilities under applicable Medicaid waiver programmes.",
         },
       },
       {
@@ -197,7 +199,7 @@ export default function About() {
           <div className="rounded-3xl bg-white/90 p-6 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm sm:p-10">
             <p className="text-xs font-semibold tracking-wider text-amber-700">ABOUT US</p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
-              A trusted partner in home health &amp; DODD support
+             A trusted partner in home healthcare Services
             </h1>
             <p className="mt-3 max-w-2xl text-neutral-700">
               We’re committed to regulatory excellence and exceptional client care—so people feel
@@ -222,24 +224,29 @@ export default function About() {
       </section>
 
       {/* ========= AT A GLANCE ========= */}
-      <section className="pb-4">
-        <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
-          {stats.map(({ icon: Icon, label, value }) => (
-            <div
-              key={label}
-              className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm"
-            >
-              <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
-                <Icon className="h-5 w-5 text-amber-700" />
-              </span>
-              <div>
-                <div className="text-xl font-extrabold leading-tight">{value}</div>
-                <div className="text-sm text-neutral-600">{label}</div>
-              </div>
-            </div>
-          ))}
+     {/* ========= AT A GLANCE ========= */}
+<section className="relative py-6">
+  {/* Background gradient */}
+  <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-50 via-white to-amber-100" />
+
+  <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
+    {stats.map(({ icon: Icon, label, value }) => (
+      <div
+        key={label}
+        className="flex items-center gap-3 rounded-2xl border border-neutral-200 bg-white/95 p-5 shadow-sm ring-1 ring-black/5 backdrop-blur"
+      >
+        <span className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
+          <Icon className="h-5 w-5 text-amber-700" />
+        </span>
+        <div>
+          <div className="text-xl font-extrabold leading-tight">{value}</div>
+          <div className="text-sm text-neutral-600">{label}</div>
         </div>
-      </section>
+      </div>
+    ))}
+  </div>
+</section>
+
 
       {/* ========= WHO WE ARE ========= */}
       <section className="py-4">
@@ -255,7 +262,7 @@ export default function About() {
             <div className="mt-5">
               <a
                 href="/referral"
-                className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-5 py-2 font-semibold text-white shadow-sm hover:bg-amber-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow-sm hover:bg-amber-700"
               >
                 Start Referral <ArrowRight className="h-4 w-4" />
               </a>
@@ -271,14 +278,15 @@ export default function About() {
                 className="h-80 w-full rounded-3xl object-cover shadow-lg ring-1 ring-black/5"
                 loading="lazy"
               />
-              <div className="absolute -right-4 -bottom-6 hidden h-40 w-64 rounded-2xl bg-amber-50 ring-1 ring-black/5 sm:block" />
+              {/* <div className="absolute -right-4 -bottom-6 hidden h-40 w-64 rounded-2xl bg-amber-50 ring-1 ring-black/5 sm:block" /> */}
+            
             </div>
           </div>
         </div>
       </section>
 
       {/* ========= COMPLIANCE ========= */}
-      <section className="py-10">
+      {/* <section className="py-10">
         <div className="mx-auto max-w-7xl rounded-3xl border border-neutral-200 bg-white/90 px-6 py-6 shadow-sm ring-1 ring-black/5 sm:px-8">
           <div className="grid gap-6 sm:grid-cols-3">
             <div className="flex items-start gap-3">
@@ -316,7 +324,7 @@ export default function About() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ========= CORE VALUES ========= */}
       <section className="py-12">
@@ -358,7 +366,7 @@ export default function About() {
               {
                 q: "Do you accept Medicaid waiver clients?",
                 a:
-                  "Yes. We support adults with developmental disabilities under applicable Medicaid waiver programmes.",
+                  "Yes. We support individuals with developmental disabilities under applicable Medicaid waiver programmes.",
               },
               {
                 q: "How quickly can services start?",
@@ -384,38 +392,60 @@ export default function About() {
       </section>
 
       {/* ========= CTA ========= */}
-      <section className="relative py-14">
-        <div className="absolute inset-0 -z-10 bg-amber-50" />
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-6 rounded-3xl border border-amber-200 bg-white p-6 shadow-sm sm:grid-cols-3 sm:p-10">
-            <div className="sm:col-span-2">
-              <p className="text-sm font-semibold tracking-wide text-amber-700">Ready to talk?</p>
-              <h4 className="mt-1 text-2xl font-extrabold tracking-tight">We’re here to help.</h4>
-              <p className="mt-2 max-w-2xl text-neutral-700">
-                Whether you’re exploring services or have questions about eligibility, we’ll respond
-                promptly and respectfully.
+      <section className="relative isolate overflow-hidden py-16 sm:py-24">
+        {/* Background image */}
+        <img
+          src={ctaBg}
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 z-0 h-full w-full object-cover"
+          loading="lazy"
+        />
+      
+        {/* Overlays (lighter + brand amber) */}
+        <div className="absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/25 to-black/60" />
+        <div className="absolute inset-0 z-10 bg-amber-900/20 mix-blend-multiply" />
+        <div className="absolute inset-0 z-10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.10),transparent_60%)]" />
+      
+        {/* Content */}
+        <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="rounded-3xl border border-white/15 bg-white/10 p-8 shadow-2xl ring-1 ring-black/10 backdrop-blur-xl sm:p-12">
+              <p className="text-xs font-semibold tracking-[0.18em] text-amber-200">
+                READY TO BEGIN
               </p>
-              <div className="mt-5 flex flex-wrap gap-3">
+      
+              <h4 className="mt-3 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+                We’re here to help.
+              </h4>
+      
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-white/85">
+                 Whether you’re exploring services or have questions about eligibility, we’ll respond
+                promptly.
+              </p>
+      
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <a
                   href="/referral"
-                  className="inline-flex items-center gap-2 rounded-full bg-amber-600 px-6 py-3 font-semibold text-white shadow-sm hover:bg-amber-700"
+                  className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 px-7 py-3 font-semibold text-white shadow-lg shadow-black/20 ring-1 ring-white/10 transition hover:from-amber-600 hover:to-amber-700"
                 >
-                  Start Referral <ArrowRight className="h-4 w-4" />
+                  Start Referral
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </a>
+      
                 <a
                   href="/inquiries"
-                  className="inline-flex items-center gap-2 rounded-full border border-neutral-300 bg-white px-6 py-3 font-semibold text-neutral-900 hover:border-neutral-400"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-7 py-3 font-semibold text-white backdrop-blur transition hover:bg-white/15"
                 >
                   Send an Inquiry
                 </a>
               </div>
+      
+              <div className="mx-auto mt-8 h-px w-24 bg-white/20" />
+              <p className="mt-4 text-xs text-white/70">
+                Menorah Health LLP • In-home support across Franklin & Delaware counties
+              </p>
             </div>
-            <img
-              src={heroImage}
-              alt="Client support"
-              className="hidden h-60 w-full rounded-2xl object-cover ring-1 ring-black/5 sm:block"
-              loading="lazy"
-            />
           </div>
         </div>
       </section>
