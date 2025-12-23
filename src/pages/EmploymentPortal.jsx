@@ -294,7 +294,7 @@ export default function EmploymentPortal() {
        <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
          <div className="mx-auto max-w-3xl text-center">
            <div className="rounded-3xl border border-white/15 bg-white/10 p-8 shadow-2xl ring-1 ring-black/10 backdrop-blur-xl sm:p-12">
-             <p className="text-xs font-semibold capitalize tracking-[0.18em] text-amber-200">
+             <p className="text-xs font-semibold text-transform: uppercase tracking-[0.18em] text-amber-200">
                 Ready to take the next step?
              </p>
      

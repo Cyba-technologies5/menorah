@@ -224,10 +224,9 @@ export default function About() {
       </section>
 
       {/* ========= AT A GLANCE ========= */}
-     {/* ========= AT A GLANCE ========= */}
 <section className="relative py-6">
   {/* Background gradient */}
-  <div className="absolute inset-0 z-0 bg-gradient-to-br from-amber-50 via-white to-amber-100" />
+  <div className="absolute inset-0 z-10 bg-gradient-to-br from-amber-50 via-white to-amber-100" />
 
   <div className="mx-auto grid max-w-7xl gap-4 px-4 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
     {stats.map(({ icon: Icon, label, value }) => (

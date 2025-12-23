@@ -21,3 +21,11 @@ createRoot(document.getElementById("root")).render(
     </BrowserRouter>
   </StrictMode>
 );
+
+const loader = document.getElementById("app-loader");
+if (loader) {
+  setTimeout(() => {
+    loader.classList.add("fade-out");
+    setTimeout(() => loader.remove(), 300);
+  }, 400); // stays at least 700ms
+}

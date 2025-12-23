@@ -5,8 +5,117 @@
     <link rel="icon" type="image/png" href="/menorah-favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>menorah-health</title>
+    
+    <style>
+  :root{
+    /* Brand palette (tweak if you want) */
+    --brand-amber: #f59e0b; /* Tailwind amber-500 */
+    --brand-amber2:#fbbf24; /* amber-400 */
+    --ink: #0f172a;         /* slate-900 */
+    --muted:#475569;        /* slate-600 */
+    --paper:#fff7ed;        /* amber-50 */
+    --paper2:#ffffff;
+  }
+
+  #app-loader{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    display:grid;
+    place-items:center;
+    background:
+      radial-gradient(900px 520px at 50% 40%, rgba(245,158,11,.20), transparent 58%),
+      radial-gradient(600px 360px at 50% 55%, rgba(251,191,36,.18), transparent 60%),
+      linear-gradient(180deg, var(--paper), var(--paper2));
+  }
+
+  .loader-wrap{
+    width:min(520px, 86vw);
+    padding: 28px 18px;
+    text-align:center;
+  }
+
+  .halo{
+    width:88px;
+    height:88px;
+    border-radius:999px;
+    margin: 0 auto 18px;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(245,158,11,.35), transparent 58%),
+      conic-gradient(from 180deg, rgba(245,158,11,1), rgba(251,191,36,1), rgba(245,158,11,1));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 0);
+            mask: radial-gradient(farthest-side, transparent calc(100% - 10px), #000 0);
+    animation: spin 1.1s linear infinite;
+    box-shadow: 0 22px 55px rgba(15,23,42,.16);
+  }
+
+  .brandline{
+    font: 800 18px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    letter-spacing: .02em;
+    color: var(--ink);
+  }
+
+  .sub{
+    margin-top: 6px;
+    font: 500 13px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    color: rgba(71,85,105,.85);
+  }
+
+  .bar{
+    margin: 18px auto 0;
+    height: 10px;
+    border-radius: 999px;
+    background: rgba(15,23,42,.06);
+    overflow:hidden;
+    position:relative;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+  }
+
+  .bar > span{
+    position:absolute;
+    inset:0;
+    width: 44%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--brand-amber), var(--brand-amber2), var(--brand-amber));
+    filter: saturate(1.05);
+    animation: slide 1.1s ease-in-out infinite;
+  }
+
+  .hint{
+    margin-top: 12px;
+    font: 600 11px/1.2 system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    text-transform: uppercase;
+    letter-spacing:.16em;
+    color: rgba(15,23,42,.55);
+  }
+
+  #app-loader.fade-out{ animation: fade .28s ease forwards; }
+  @keyframes fade{ to{ opacity:0; visibility:hidden; } }
+  @keyframes spin{ to{ transform: rotate(360deg); } }
+  @keyframes slide{
+    0%   { transform: translateX(-120%); }
+    50%  { transform: translateX(60%); }
+    100% { transform: translateX(240%); }
+  }
+</style>
+
   </head>
   <body>
+    <div id="app-loader">
+  <div class="loader-wrap">
+    <div class="halo"></div>
+
+    <div class="brandline">Menorah Health LLP</div>
+    <div class="sub">Compassionate in-home support</div>
+
+    <div class="bar"><span></span></div>
+    <div class="hint">Preparing your experience</div>
+  </div>
+</div>
+
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
