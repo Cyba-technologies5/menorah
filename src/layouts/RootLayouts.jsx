@@ -37,7 +37,7 @@ function DrawerPortal({ open, onClose, children }) {
   return createPortal(
     <div
       className={cn(
-        "fixed inset-0 z-[2147483647]", // extremely high z-index
+        "fixed inset-0 z-[2147483647]",
         open ? "pointer-events-auto" : "pointer-events-none"
       )}
       aria-hidden={!open}
@@ -50,7 +50,7 @@ function DrawerPortal({ open, onClose, children }) {
         )}
         onClick={onClose}
       />
-      {/* Sliding panel shell (solid white) */}
+      {/* Sliding panel shell */}
       <div
         className={cn(
           "absolute right-0 top-0 h-full w-[88%] max-w-sm",
@@ -113,6 +113,12 @@ export default function RootLayout() {
   const mobileAnchorBase =
     "block rounded-lg px-3 py-1.5 text-sm bg-white border border-neutral-200 shadow-sm text-neutral-800";
 
+  // Desktop link style (your current “new header” look)
+  const desktopLinkBase =
+    "relative font-semibold tracking-tight text-neutral-800 transition-all hover:text-neutral-950 hover:-translate-y-0.5 " +
+    "after:absolute after:left-0 after:-bottom-2 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full " +
+    "after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700 after:transition-transform after:duration-300 after:content-['']";
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       {/* ===== HEADER ===== */}
@@ -137,12 +143,7 @@ export default function RootLayout() {
             <Link
               to="/"
               aria-current={isActive("/") ? "page" : undefined}
-              className={cn(
-                "relative font-semibold tracking-tight text-neutral-800 transition-all hover:text-neutral-950 hover:-translate-y-0.5",
-                "after:absolute after:left-0 after:-bottom-2 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full",
-                "after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700 after:transition-transform after:duration-300 after:content-['']",
-                isActive("/") ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100"
-              )}
+              className={cn(desktopLinkBase, isActive("/") ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100")}
             >
               Home
             </Link>
@@ -151,12 +152,7 @@ export default function RootLayout() {
             <Link
               to="/about"
               aria-current={isActive("/about") ? "page" : undefined}
-              className={cn(
-                "relative font-semibold tracking-tight text-neutral-800 transition-all hover:text-neutral-950 hover:-translate-y-0.5",
-                "after:absolute after:left-0 after:-bottom-2 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full",
-                "after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700 after:transition-transform after:duration-300 after:content-['']",
-                isActive("/about") ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100"
-              )}
+              className={cn(desktopLinkBase, isActive("/about") ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100")}
             >
               About Us
             </Link>
@@ -172,9 +168,7 @@ export default function RootLayout() {
                 aria-current={anyServiceActive ? "page" : undefined}
                 className={cn(
                   "relative inline-flex items-center gap-1 font-semibold tracking-tight",
-                  "text-neutral-800 transition-all hover:text-neutral-950 hover:-translate-y-0.5",
-                  "after:absolute after:left-0 after:-bottom-2 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full",
-                  "after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700 after:transition-transform after:duration-300 after:content-['']",
+                  desktopLinkBase,
                   anyServiceActive ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100"
                 )}
                 onClick={() => setServicesOpen(false)}
@@ -186,35 +180,41 @@ export default function RootLayout() {
                 />
               </Link>
 
-              {/* Dropdown panel */}
-              <div
-                role="menu"
-                aria-label="Services"
-                className={cn(
-                  "absolute left-0 mt-3 w-[380px] rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl ring-1 ring-black/5",
-                  "transition-all duration-150",
-                  servicesOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"
-                )}
-              >
-                {servicesMenu.map(({ label, href }) => {
-                  const active = isActive(href);
-                  return (
-                    <Link
-                      key={label}
-                      to={href}
-                      className={cn(
-                        "group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-all",
-                        active
-                          ? "bg-amber-50 text-amber-900 shadow-[inset_0_-2px_0_rgba(245,158,11,0.35)]"
-                          : "text-neutral-800 hover:bg-white hover:text-neutral-950 hover:shadow-[0_4px_16px_rgba(17,24,39,0.06),inset_0_-2px_0_rgba(245,158,11,0.35)] hover:-translate-y-0.5"
-                      )}
-                    >
-                      <span className="flex-1">{label}</span>
-                      <span className="ml-3 h-0.5 w-0 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-300 group-hover:w-8" />
-                    </Link>
-                  );
-                })}
-              </div>
+             
+              {/* Dropdown panel (FORCE same look everywhere) */}
+<div
+  role="menu"
+  aria-label="Services"
+  className={cn(
+    "absolute left-0 mt-3 w-[380px]",
+    "rounded-2xl border border-neutral-200 bg-white p-2 shadow-xl ring-1 ring-black/5",
+    "isolate", // prevents blend/background effects from parents/sections
+    "transition-all duration-150",
+    servicesOpen
+      ? "opacity-100 translate-y-0"
+      : "pointer-events-none opacity-0 -translate-y-1"
+  )}
+>
+  {servicesMenu.map(({ label, href }) => {
+    const active = isActive(href);
+    return (
+      <Link
+        key={label}
+        to={href}
+        className={cn(
+          "group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-all",
+          active
+            ? "bg-amber-50 text-amber-900 shadow-[inset_0_-2px_0_rgba(245,158,11,0.35)]"
+            : "text-neutral-800 hover:bg-white hover:text-neutral-950 hover:shadow-[0_4px_16px_rgba(17,24,39,0.06),inset_0_-2px_0_rgba(245,158,11,0.35)] hover:-translate-y-0.5"
+        )}
+      >
+        <span className="flex-1">{label}</span>
+        <span className="ml-3 h-0.5 w-0 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-300 group-hover:w-8" />
+      </Link>
+    );
+  })}
+</div>
+
             </div>
 
             {/* Remaining links */}
@@ -227,12 +227,7 @@ export default function RootLayout() {
                     key={label}
                     to={href}
                     aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative font-semibold tracking-tight text-neutral-800 transition-all hover:text-neutral-950 hover:-translate-y-0.5",
-                      "after:absolute after:left-0 after:-bottom-2 after:h-0.5 after:w-full after:origin-left after:scale-x-0 after:rounded-full",
-                      "after:bg-gradient-to-r after:from-amber-500 after:via-amber-600 after:to-amber-700 after:transition-transform after:duration-300 after:content-['']",
-                      active ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100"
-                    )}
+                    className={cn(desktopLinkBase, active ? "text-neutral-950 after:scale-x-100" : "hover:after:scale-x-100")}
                   >
                     {label}
                   </Link>
@@ -265,7 +260,7 @@ export default function RootLayout() {
         <div className="border-b border-neutral-200" />
       </header>
 
-      {/* ===== MOBILE DRAWER (single instance via portal) ===== */}
+      {/* ===== MOBILE DRAWER ===== */}
       <DrawerPortal open={mobileOpen} onClose={() => setMobileOpen(false)}>
         <div className="flex items-center justify-between border-b px-4 py-3 bg-white">
           <div className="flex items-center gap-2">
@@ -285,26 +280,18 @@ export default function RootLayout() {
         </div>
 
         <nav className="px-2 py-3 space-y-1 bg-white text-neutral-900">
-          {/* Home */}
           <Link
             to="/"
             onClick={() => setMobileOpen(false)}
-            className={cn(
-              mobileItemBase,
-              isActive("/") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
-            )}
+            className={cn(mobileItemBase, isActive("/") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50")}
           >
             Home
           </Link>
 
-          {/* About */}
           <Link
             to="/about"
             onClick={() => setMobileOpen(false)}
-            className={cn(
-              mobileItemBase,
-              isActive("/about") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
-            )}
+            className={cn(mobileItemBase, isActive("/about") ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50")}
           >
             About Us
           </Link>
@@ -315,10 +302,7 @@ export default function RootLayout() {
               <Link
                 to="/services"
                 onClick={() => setMobileOpen(false)}
-                className={cn(
-                  mobileItemBase + " flex-1",
-                  anyServiceActive ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
-                )}
+                className={cn(mobileItemBase + " flex-1", anyServiceActive ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50")}
               >
                 Services
               </Link>
@@ -334,12 +318,7 @@ export default function RootLayout() {
               </button>
             </div>
 
-            <div
-              className={cn(
-                "overflow-hidden transition-all",
-                mobileServicesOpen ? "max-h-[480px]" : "max-h-0"
-              )}
-            >
+            <div className={cn("overflow-hidden transition-all", mobileServicesOpen ? "max-h-[480px]" : "max-h-0")}>
               <ul className="mt-1 space-y-1 border-l pl-4">
                 {servicesMenu.map(({ label, href }) => (
                   <li key={label}>
@@ -356,7 +335,6 @@ export default function RootLayout() {
             </div>
           </div>
 
-          {/* Remaining links */}
           {navPrimary
             .filter(({ label }) => !["Home", "About Us", "Services"].includes(label))
             .map(({ label, href }) => (
@@ -364,20 +342,20 @@ export default function RootLayout() {
                 key={label}
                 to={href}
                 onClick={() => setMobileOpen(false)}
-                className={cn(
-                  mobileItemBase,
-                  isActive(href) ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50"
-                )}
+                className={cn(mobileItemBase, isActive(href) ? "ring-1 ring-amber-300 text-amber-900" : "hover:bg-neutral-50")}
               >
                 {label}
               </Link>
             ))}
 
-          {/* CTA + contact */}
           <div className="mt-3 border-t pt-4">
-             <Link to="/referral" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700">
-                            Start Referral <ArrowRight className="h-4 w-4" />
-                          </Link>
+            <Link
+              to="/referral"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700"
+              onClick={() => setMobileOpen(false)}
+            >
+              Start Referral <ArrowRight className="h-4 w-4" />
+            </Link>
 
             <div className="mt-6 space-y-2 text-sm">
               <a
@@ -407,7 +385,6 @@ export default function RootLayout() {
         <div className="h-[2px] bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
 
         <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
-          {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-start">
               <img
@@ -419,9 +396,7 @@ export default function RootLayout() {
             </div>
           </div>
 
-          {/* Link columns */}
           <nav className="grid grid-cols-2 gap-6 md:col-span-2 md:grid-cols-3">
-            {/* Company */}
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
                 Company
@@ -449,7 +424,6 @@ export default function RootLayout() {
               </ul>
             </div>
 
-            {/* Services */}
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
                 Services
@@ -477,7 +451,6 @@ export default function RootLayout() {
               </ul>
             </div>
 
-            {/* Legal (placeholders) */}
             <div>
               <h4 className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
                 Legal
@@ -510,15 +483,17 @@ export default function RootLayout() {
             </div>
           </nav>
 
-          {/* Footer CTA + clickable contact */}
           <div className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm flex flex-col items-start">
             <p className="text-sm font-semibold text-neutral-900">Ready to begin?</p>
             <p className="mt-1 text-sm text-neutral-600">
               Start a referral and our team will follow up promptly.
             </p>
-             <Link to="/referral" className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700">
-                            Start Referral <ArrowRight className="h-4 w-4" />
-                          </Link>
+            <Link
+              to="/referral"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-amber-600 px-5 py-2 font-semibold text-white shadow hover:bg-amber-700"
+            >
+              Start Referral <ArrowRight className="h-4 w-4" />
+            </Link>
 
             <div className="space-y-1 text-sm text-neutral-700 mt-6">
               <a

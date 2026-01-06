@@ -225,7 +225,8 @@ export default function PatientPortal() {
             <p className="text-neutral-700">{helpText}</p>
             <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-neutral-800">
               <span className="inline-flex items-center gap-2">
-                <Phone className="h-4 w-4 text-amber-700" /> (614) 772-0563
+                <Phone className="h-4 w-4 text-amber-700" />
+                 <a href="tel:+16148311177">+1 (614) 831-1177</a>
               </span>
               <span className="inline-flex items-center gap-2">
                 <Mail className="h-4 w-4 text-amber-700" /> menorahhealth@gmail.com

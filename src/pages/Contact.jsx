@@ -1,4 +1,4 @@
-// src/pages/Contact.jsx
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "../components/Seo.jsx";
@@ -8,7 +8,6 @@ import {
   MapPin,
   Clock,
   Send,
-  FileUp,
   User,
   MessageSquare,
   Building2,
@@ -16,8 +15,9 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-// Reuse your brand hero; swap anytime
 import heroImage from "../assets/about/heroImage.png";
+
+const FORMSPREE_CONTACT_ENDPOINT = "https://formspree.io/f/mkoglvyq";
 
 const HOURS = [
   { day: "Monday–Friday", time: "08:30 – 18:00" },
@@ -26,6 +26,7 @@ const HOURS = [
 ];
 
 const COUNTIES = ["Franklin County", "Delaware County", "Other (by need)"];
+
 const TOPICS = [
   "General Inquiry",
   "Referral / Intake",
@@ -87,6 +88,84 @@ const orgJsonLd = {
   ],
 };
 
+function PopupModal({ open, type, onClose }) {
+  if (!open) return null;
+
+  const isSuccess = type === "success";
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center px-4"
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+    >
+      {/* backdrop */}
+      <div className="absolute inset-0 bg-black/50" />
+
+      {/* modal */}
+      <div
+        className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl ring-1 ring-black/10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full border border-neutral-200 bg-white px-3 py-1 text-sm font-semibold text-neutral-700 hover:bg-neutral-50"
+          aria-label="Close"
+        >
+          ✕
+        </button>
+
+        <div className="flex items-start gap-3">
+          <span
+            className={`inline-flex h-10 w-10 items-center justify-center rounded-xl ${
+              isSuccess ? "bg-green-100" : "bg-red-100"
+            }`}
+          >
+            {isSuccess ? (
+              <CheckCircle2 className="h-5 w-5 text-green-700" />
+            ) : (
+              <AlertCircle className="h-5 w-5 text-red-700" />
+            )}
+          </span>
+
+          <div>
+            <h3 className="text-lg font-extrabold tracking-tight text-neutral-900">
+              {isSuccess ? "Message sent!" : "Message not sent"}
+            </h3>
+
+            <p className="mt-1 text-sm text-neutral-700">
+              {isSuccess
+                ? "Thanks — we’ve received your message. We’ll respond within 1–2 business days."
+                : "Sorry, something went wrong. Please try again, or contact us by phone/email."}
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="rounded-full bg-amber-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-amber-700"
+              >
+                OK
+              </button>
+
+              {!isSuccess && (
+                <a
+                  href="mailto:menorahhealth@gmail.com"
+                  className="rounded-full border border-neutral-300 bg-white px-5 py-2 text-sm font-semibold text-neutral-900 hover:border-neutral-400"
+                >
+                  Email us
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Contact() {
   const title = "Contact • Menorah Health LLP";
   const description =
@@ -100,7 +179,7 @@ export default function Contact() {
       ? `${window.location.origin}${heroImage.startsWith("/") ? "" : "/"}${heroImage}`
       : `https://example.com${heroImage.startsWith("/") ? "" : "/"}${heroImage}`;
 
-  // ---- Simple form state + validation (no external deps) ----
+  // ---- Form state ----
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -109,12 +188,16 @@ export default function Contact() {
     topic: "",
     message: "",
     consent: false,
-    attachments: [],
     honey: "", // honeypot
   });
+
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [status, setStatus] = useState(null); // "success" | "error" | null
+
+  // ✅ Popup state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("success"); // "success" | "error"
 
   const validate = () => {
     const e = {};
@@ -124,20 +207,18 @@ export default function Contact() {
     if (!form.message.trim()) e.message = "Please enter a brief message.";
     if (!form.consent) e.consent = "Please confirm you agree to be contacted.";
     return e;
-    // Optional: add stricter phone checks if you like
   };
 
   const onChange = (ev) => {
-    const { name, value, type, checked, files } = ev.target;
+    const { name, value, type, checked } = ev.target;
     if (type === "checkbox") setForm((f) => ({ ...f, [name]: checked }));
-    else if (type === "file")
-      setForm((f) => ({ ...f, [name]: files ? Array.from(files) : [] }));
     else setForm((f) => ({ ...f, [name]: value }));
   };
 
   const onSubmit = async (ev) => {
     ev.preventDefault();
     if (form.honey) return; // bot
+
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length) return;
@@ -146,32 +227,41 @@ export default function Contact() {
     setStatus(null);
 
     try {
-      // ======= HOW TO WIRE BACKEND =======
-      // 1) Formspree: set VITE_CONTACT_ENDPOINT to your Formspree endpoint (e.g., https://formspree.io/f/xxxx)
-      // 2) Serverless: create /api/contact and handle multipart/form-data
-      const ENDPOINT = import.meta.env.VITE_CONTACT_ENDPOINT || "";
-      if (!ENDPOINT) {
-        // Fallback: open mail client with prefilled subject/body
-        const subject = encodeURIComponent(`[${form.topic || "General"}] ${form.fullName}`);
-        const body = encodeURIComponent(
-          `Name: ${form.fullName}\nEmail: ${form.email}\nPhone: ${form.phone}\nCounty: ${form.county}\nTopic: ${form.topic}\n\nMessage:\n${form.message}`
-        );
-        window.location.href = `mailto:menorahhealth@gmail.com?subject=${subject}&body=${body}`;
-        setSubmitting(false);
-        setStatus("success");
-        return;
-      }
-
       const data = new FormData();
-      Object.entries(form).forEach(([k, v]) => {
-        if (k === "attachments") v.forEach((file) => data.append("attachments", file));
-        else if (typeof v === "boolean") data.append(k, v ? "true" : "false");
-        else data.append(k, v ?? "");
+
+      data.append(
+        "_subject",
+        `MenorahHealth.org — Contact Form (${form.topic || "General"})`
+      );
+
+      data.append("fullName", form.fullName);
+      data.append("email", form.email);
+      data.append("phone", form.phone);
+      data.append("county", form.county);
+      data.append("topic", form.topic);
+      data.append("message", form.message);
+      data.append("consent", form.consent ? "true" : "false");
+      data.append("honey", form.honey);
+
+      const res = await fetch(FORMSPREE_CONTACT_ENDPOINT, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
       });
 
-      const res = await fetch(ENDPOINT, { method: "POST", body: data });
-      if (!res.ok) throw new Error("Network error");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData?.error || "Network error");
+      }
+
+      // ✅ success
       setStatus("success");
+      setModalType("success");
+      setModalOpen(true);
+
+      // Optional: auto-close after 4s
+      // setTimeout(() => setModalOpen(false), 4000);
+
       setForm({
         fullName: "",
         email: "",
@@ -180,12 +270,15 @@ export default function Contact() {
         topic: "",
         message: "",
         consent: false,
-        attachments: [],
         honey: "",
       });
     } catch (err) {
       console.error(err);
+
+      // ✅ error
       setStatus("error");
+      setModalType("error");
+      setModalOpen(true);
     } finally {
       setSubmitting(false);
     }
@@ -193,6 +286,13 @@ export default function Contact() {
 
   return (
     <main id="contact" className="bg-white text-neutral-900">
+      {/* ✅ POPUP */}
+      <PopupModal
+        open={modalOpen}
+        type={modalType}
+        onClose={() => setModalOpen(false)}
+      />
+
       {/* SEO */}
       <Seo
         title={title}
@@ -222,12 +322,15 @@ export default function Contact() {
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
         <div className="mx-auto flex min-h-[320px] max-w-7xl items-end px-4 pb-10 sm:min-h-[420px] sm:px-6 lg:px-8">
           <div className="rounded-3xl bg-white/95 p-6 shadow-2xl ring-1 ring-black/5 backdrop-blur-sm sm:p-10">
-            <p className="text-xs font-semibold tracking-wider text-amber-700">CONTACT</p>
+            <p className="text-xs font-semibold tracking-wider text-amber-700">
+              CONTACT
+            </p>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">
               We’re here to help
             </h1>
             <p className="mt-3 max-w-3xl text-neutral-700">
-              Referrals, records, questions, or next steps—reach us by phone, email, or send a secure message below.
+              Referrals, records, questions, or next steps—reach us by phone,
+              email, or send a secure message below.
             </p>
           </div>
         </div>
@@ -244,10 +347,10 @@ export default function Contact() {
               <div className="mt-4 space-y-3 text-sm text-neutral-800">
                 <p className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-amber-700" />
-                  <a href="tel:+1 (614) 8311177"> +1 (614) 8311177</a>
+                  <a href="tel:+16148311177">+1 (614) 831-1177</a>
                 </p>
                 <p className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-amber-700" />{" "}
+                  <Mail className="h-4 w-4 text-amber-700" />
                   <a
                     href="mailto:menorahhealth@gmail.com"
                     className="font-semibold text-amber-700 hover:underline"
@@ -302,7 +405,6 @@ export default function Contact() {
                 ))}
               </div>
               <div className="mt-4 overflow-hidden rounded-2xl ring-1 ring-black/5">
-                {/* Replace with your exact address embed when ready */}
                 <iframe
                   title="Service area map"
                   src="https://www.google.com/maps?q=Franklin%20County%20OH&output=embed"
@@ -322,8 +424,9 @@ export default function Contact() {
                 Statement on the Provision of Service
               </h2>
               <p className="mt-2 text-sm text-neutral-700">
-                Menorah Health LLP does not discriminate based on race, color, religion, national origin,
-                sex, disability, or age. We welcome all people and provide services based on capability and need.
+                Menorah Health LLP does not discriminate based on race, color,
+                religion, national origin, sex, disability, or age. We welcome
+                all people and provide services based on capability and need.
               </p>
             </div>
           </div>
@@ -335,7 +438,9 @@ export default function Contact() {
               noValidate
               className="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm ring-1 ring-black/5"
             >
-              <h2 className="text-xl font-extrabold tracking-tight">Send a secure message</h2>
+              <h2 className="text-xl font-extrabold tracking-tight">
+                Send a secure message
+              </h2>
               <p className="mt-2 text-sm text-neutral-600">
                 We typically respond within 1–2 business days.
               </p>
@@ -370,7 +475,9 @@ export default function Contact() {
                     />
                   </div>
                   {errors.fullName && (
-                    <p className="mt-1 text-xs text-amber-700">{errors.fullName}</p>
+                    <p className="mt-1 text-xs text-amber-700">
+                      {errors.fullName}
+                    </p>
                   )}
                 </div>
 
@@ -475,26 +582,10 @@ export default function Contact() {
                     required
                   />
                   {errors.message && (
-                    <p className="mt-1 text-xs text-amber-700">{errors.message}</p>
+                    <p className="mt-1 text-xs text-amber-700">
+                      {errors.message}
+                    </p>
                   )}
-                </div>
-
-                <div className="sm:col-span-2">
-                  <label className="text-sm font-medium">Attachments (optional)</label>
-                  <div className="mt-1 flex items-center gap-3 rounded-xl border border-neutral-300 bg-white px-3 py-2">
-                    <FileUp className="h-4 w-4 text-neutral-500" />
-                    <input
-                      type="file"
-                      name="attachments"
-                      onChange={onChange}
-                      multiple
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      className="w-full"
-                    />
-                  </div>
-                  <p className="mt-1 text-xs text-neutral-500">
-                    Accepted: PDF, JPG, PNG (max size depends on your backend).
-                  </p>
                 </div>
 
                 <div className="sm:col-span-2">
@@ -508,12 +599,14 @@ export default function Contact() {
                       required
                     />
                     <span>
-                      I consent to be contacted about my inquiry and confirm I’m not sharing sensitive
-                      medical details here. (For PHI, we’ll use a secure channel.)
+                      I consent to be contacted about my inquiry and confirm I’m
+                      not sharing sensitive medical details here. 
                     </span>
                   </label>
                   {errors.consent && (
-                    <p className="mt-1 text-xs text-amber-700">{errors.consent}</p>
+                    <p className="mt-1 text-xs text-amber-700">
+                      {errors.consent}
+                    </p>
                   )}
                 </div>
               </div>
@@ -527,15 +620,9 @@ export default function Contact() {
                   <Send className="h-4 w-4" />
                   {submitting ? "Sending…" : "Send Message"}
                 </button>
-                {/* <Link
-                  to="/about"
-                  className="rounded-full border border-neutral-300 bg-white px-5 py-3 text-sm font-semibold text-neutral-900 hover:border-neutral-400"
-                >
-                  Learn About Us
-                </Link> */}
               </div>
 
-              {/* Status */}
+              {/* Optional inline status (keep or remove) */}
               {status === "success" && (
                 <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-2 text-sm text-green-800 ring-1 ring-green-200">
                   <CheckCircle2 className="h-4 w-4" />
@@ -567,6 +654,7 @@ export default function Contact() {
               </p>
               <span className="mt-3 inline-block h-0.5 w-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-300 group-hover:w-16" />
             </Link>
+
             <Link
               to="/services"
               className="group rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm ring-1 ring-black/5 transition-all hover:-translate-y-0.5 hover:shadow-md"
@@ -577,12 +665,15 @@ export default function Contact() {
               </p>
               <span className="mt-3 inline-block h-0.5 w-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-300 group-hover:w-16" />
             </Link>
+
             <Link
               to="/patient-portal"
               className="group rounded-3xl border border-neutral-200 bg-white p-5 shadow-sm ring-1 ring-black/5 transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
               <h4 className="font-semibold">Patient Portal</h4>
-              <p className="mt-1 text-sm text-neutral-700">Coming soon—secure access to your care.</p>
+              <p className="mt-1 text-sm text-neutral-700">
+                Coming soon—secure access to your care.
+              </p>
               <span className="mt-3 inline-block h-0.5 w-0 bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 transition-all duration-300 group-hover:w-16" />
             </Link>
           </div>

@@ -27,5 +27,5 @@ if (loader) {
   setTimeout(() => {
     loader.classList.add("fade-out");
     setTimeout(() => loader.remove(), 300);
-  }, 400); // stays at least 700ms
+  }, 300); // stays at least 700ms
 }
